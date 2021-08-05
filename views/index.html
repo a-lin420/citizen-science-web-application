@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Citizen Science</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+
+    <!-- Include Handlebars from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="/static/js/main.js" type=module defer></script>
+  </head>
+  <body>
+
+    <header>
+      <div id="logo"></div>
+      <nav>
+          <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#!/users">Users</a></li>
+              <li><a href="#!/observations">Observations</a></li>
+              <li><a href="#!/submit">Submit an observation</a></li>
+          </ul>
+      </nav>
+    </header>
+
+    <div id="content">
+
+      <div id="heading">
+        <hgroup>
+            <h1>Citizen Science</h1>
+            <h2>Understanding Our Trees</h2>
+        </hgroup>
+      </div>
+
+      <div id="view">
+        <div id="target"> </div>
+        <div id="target2"> </div>
+      </div> 
+
+    </div>
+
+  <footer>
+
+    <div id="social">
+      <ul>
+        <li id="social-twitter"><a href="#">Twitter</a></li>
+        <li id="social-facebook"><a href="#">Facebook</a></li>
+        <li id="social-instagram"><a href="#">Instagram</a></li>
+      </ul>
+    </div>
+
+    <ul class="footer-tos">
+      <li><a href="#">Terms</a></li>
+      <li><a href="#">Privacy</a></li>
+      <li><a href="#">Cookies</a></li>
+    </ul>
+    
+    <p id="copyright">All content and images subject to copyright &copy; COMP2110 Citizen Science 2020.</p>
+  </footer>
+
+  <!-- Templates -->
+    
+    <script id="home-recent-template" type="text/x-handlebars-template">
+      <h3> Information </h3>
+      <p> Citizen Science aims to raise scientific awareness and increase our knowledge of the world around us. 
+        You don't need a scientific degree to participate. The project allows public involvement in recording observations of trees. </p> 
+
+      <h3> Recent Observations</h3>
+      <ul>
+        {{#each mostRecent}}
+          <li class="recent-link"> <a href="/#!/observations/{{id}}"> 
+            Observation ID: {{id}} | Participant ID: {{participant}} | Date: {{timestamp}} | {{location}} | {{temperature}}&#730C {{weather}}
+          </a> </li>
+        {{/each}}
+      </ul>
+    </script>
+    <script id="home-leaderboard-template" type="text/x-handlebars-template"> 
+      <h3> Top 10 Leaderboard </h3>
+      <ul> 
+        {{#each topTenUsers}}
+          <li> <a href="/#!/users/{{id}}"> 
+            ID: {{id}} | Name: {{last_name}}, {{first_name}} 
+          </a> </li>
+        {{/each}}
+      </ul>
+    </script>
+
+    <script id="users-list-template" type="text/x-handlebars-template">
+      <h3> List of Users </h3>
+      <ul> 
+        {{#each users}}
+          <li> <a href="/#!/users/{{id}}">
+            User ID: {{id}} | {{last_name}}, {{first_name}}
+          </a> </li>
+        {{/each}}
+      </ul>
+    </script>
+    <script id="observations-list-template" type="text/x-handlebars-template">
+      <h3> List of Observations </h3>
+      <ul> 
+        {{#each observations}}
+          <li> <a href="/#!/observations/{{id}}">
+            ID: {{id}} | Participant ID: {{participant}} | {{timestamp}} | {{location}} | {{temperature}}&#730C {{weather}} 
+          </a> </li>
+        {{/each}}
+      </ul>
+    </script>
+
+    <script id="user-template" type="text/x-handlebars-template">
+      <img src = {{avatar}}>
+      <p> User ID: {{id}} </p>
+      <p> Name: {{first_name}} {{last_name}}</p>
+      <p> Email: {{email}} </p>
+    </script>
+    <script id="user-observations-template" type="text/x-handlebars-template">
+      <h3> User Observations </h3>
+      <ul>
+        {{#each userObservations}}
+          <li> <a href="/#!/observations/{{id}}"> 
+            Participant ID: {{participant}} | Date: {{timestamp}} | Observation ID: {{id}} | Location: {{location}} | Weather: {{weather}}
+          </a> </li>
+        {{/each}}
+      </ul>
+    </script>
+    <script id="observation-template" type="text/x-handlebars-template">
+      <p> Observation ID: {{id}} </p>
+      <p> Participant ID: {{participant}} </p>
+      <p> Timestamp: {{timestamp}} </p>
+      <p> Temperature: {{temperature}}&#730C </p>
+      <p> Weather: {{weather}} </p>
+      <p> Wind: {{wind}} </p>
+      <p> Location: {{location}} </p>
+      <p> Height: {{height}} </p>
+      <p> Girth: {{girth}} </p>
+      <p> Leaf Size: {{leaf_size}} </p>
+      <p> Leaf Shape: {{leaf_shape}} </p>
+      <p> Bark Colour: {{bark_colour}} </p>
+      <p> Bark Texture: {{bark_texture}} </p>
+    </script>
+
+    <script id="observation-form" type="text/x-handlebars-template"> 
+      <h3> Submit an Observation </h3>
+
+      <div id="form-error-messages"> </div>
+      <form id="submit-observation">
+        <input type="hidden" value=0 name="participant" id="participant"> <br>
+        <label for="temperature"> Temperature: </label> <br>
+        <input type="number" name="temperature" id="temperature" class="input"> <br>
+        <label for="weather"> Weather: </label> <br>
+        <select name="weather" id="weather" class="input"> 
+          <option> </option>
+          <option value="fine"> Fine </option>
+          <option value="raining"> Raining </option>
+          <option value="sunny"> Sunny </option>
+          <option value="stormy"> Stormy </option>
+        </select> <br>
+        <label for="wind"> Wind: </label> <br>
+        <select name="wind" id="wind" class="input"> 
+          <option> </option>
+          <option value="none"> None </option>
+          <option value="light"> Light </option>
+          <option value="medium"> Medium </option>
+          <option value="strong"> Strong </option>
+        </select> <br>
+        <label for="location"> Location: </label> <br>
+        <input type="text" name="location" id="location_inp" class="input"> <br>
+        <label for="height"> Height: </label> <br>
+        <input type="number" name="height" id="height" step="any" class="input"> <br>
+        <label for="girth"> Girth: </label> <br>
+        <input type="number" name="girth" id="girth" step="any" class="input"> <br>
+        <label for="leaf_size"> Leaf Size: </label> <br>
+        <select name="leaf_size" id="leaf_size" class="input">
+          <option> </option>
+          <option value="small"> Small </option>
+          <option value="medium"> Medium </option>
+          <option value="large"> Large </option>
+        </select> <br>
+        <label for="leaf_shape"> Leaf Shape: </label> <br>
+        <select name="leaf_shape" id="leaf_shape" class="input"> 
+          <option> </option>
+          <option value="rounded"> Rounded </option>
+          <option value="pointy"> Pointy </option>
+          <option value="divided"> Divided </option>
+        </select> <br>
+        <label for="bark_colour"> Bark Colour: </label> <br>
+        <select name="bark_colour" id="bark_colour" class="input"> 
+          <option> </option>
+          <option value="grey"> Grey </option>
+          <option value="red"> Red </option>
+          <option value="silver"> Silver </option>
+          <option value="brown"> Brown </option>
+        </select> <br>
+        <label for="bark_texture"> Bark Texture: </label> <br>
+        <select name="bark_texture" id="bark_texture" class="input">
+          <option> </option>
+          <option value="smooth"> Smooth </option>
+          <option value="peeling"> Peeling </option>
+          <option value="crinkles"> Crinkles </option>
+          <option value="furry"> Furry </option>
+          <option value="spotty"> Spotty </option>
+        </select> <br>
+        <a href="/#!/users/0"> <input id="button" type="submit" value="Submit"> </a>
+      </form> 
+    </script>
+
+  </body>
+</html>
